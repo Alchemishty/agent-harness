@@ -1,0 +1,207 @@
+# harness.schema.yaml — defines the structure of harness.yaml
+# Bootstrap skills read this to know what config to generate.
+# Comments serve as documentation for the agent.
+
+schema:
+  version:
+    type: integer
+    default: 1
+    description: "Schema version for forward compatibility"
+
+  project:
+    name:
+      type: string
+      required: true
+      description: "Project name, used in commit messages and PR titles"
+    description:
+      type: string
+      required: true
+      description: "One-line project description"
+    type:
+      type: string
+      enum: ["greenfield", "existing"]
+      description: "How this project was bootstrapped"
+
+  stack:
+    language:
+      type: string
+      required: true
+      description: "Primary language (python, dart, typescript, go, rust, java, etc.)"
+    framework:
+      type: string
+      description: "Primary framework (fastapi, flutter, nextjs, gin, axum, spring, etc.)"
+    runtime:
+      type: string
+      description: "Runtime version (3.12, 18.x, 1.21, etc.)"
+    backend:
+      type: string
+      description: "Backend/database (postgresql, supabase, firebase, mongodb, sqlite, etc.)"
+    orm:
+      type: string
+      description: "ORM or database layer (sqlalchemy, drift, prisma, gorm, diesel, etc.)"
+    test_framework:
+      type: string
+      required: true
+      description: "Test framework (pytest, flutter_test, jest, vitest, go test, cargo test, etc.)"
+    linter:
+      type: string
+      required: true
+      description: "Linter tool (ruff, dart analyze, eslint, golangci-lint, clippy, etc.)"
+    formatter:
+      type: string
+      description: "Formatter command (ruff format, dart format, prettier, gofmt, rustfmt, etc.)"
+
+  commands:
+    install:
+      type: string
+      required: true
+      description: "Install dependencies (uv sync, flutter pub get, npm install, go mod download, etc.)"
+    analyze:
+      type: string
+      required: true
+      description: "Static analysis / lint (ruff check src/, dart analyze lib/, eslint ., etc.)"
+    format:
+      type: string
+      description: "Code formatting (ruff format src/, dart format lib/, prettier --write ., etc.)"
+    test:
+      type: string
+      required: true
+      description: "Run all tests (pytest, flutter test, npm test, go test ./..., cargo test, etc.)"
+    test_unit:
+      type: string
+      description: "Run unit tests only"
+    test_integration:
+      type: string
+      description: "Run integration tests only"
+    build:
+      type: string
+      description: "Build command (docker build, flutter build apk, npm run build, go build, etc.)"
+    migrate:
+      type: string
+      description: "Database migration command (alembic upgrade head, prisma migrate deploy, etc.)"
+    codegen:
+      type: string
+      description: "Code generation command (dart run build_runner build, prisma generate, etc.)"
+
+  platforms:
+    type: array
+    description: "Deployment platforms for this project"
+    items:
+      name:
+        type: string
+        description: "Platform name (api, web, mobile, cli, worker)"
+      entry:
+        type: string
+        description: "Entry point file path"
+      targets:
+        type: array
+        description: "Build targets (docker, android, ios, web, binary, lambda)"
+      deploy:
+        type: string
+        description: "Deploy command (fly deploy, vercel deploy, kubectl apply, etc.)"
+
+  docs:
+    root:
+      type: string
+      default: "docs/"
+    architecture:
+      type: string
+      default: "docs/architecture.md"
+    conventions:
+      type: string
+      default: "docs/conventions.md"
+    domain:
+      type: string
+      default: "docs/domain.md"
+    testing:
+      type: string
+      default: "docs/testing.md"
+    plans_active:
+      type: string
+      default: "docs/plans/active/"
+    plans_completed:
+      type: string
+      default: "docs/plans/completed/"
+    decisions:
+      type: string
+      default: "docs/decisions/"
+    max_doc_lines:
+      type: integer
+      default: 200
+      description: "Auto-split threshold. Docs exceeding this trigger /doc-split."
+
+  enforcement:
+    import_direction:
+      enabled:
+        type: boolean
+        default: false
+      layers:
+        type: array
+        description: "Ordered list of architectural layers. Imports allowed left-to-right only."
+      rule:
+        type: string
+        default: "left-to-right only"
+    file_size_limit:
+      type: integer
+      default: 300
+      description: "Max lines per source file before /garden flags it"
+    no_secrets_pattern:
+      type: string
+      default: "(API_KEY|SECRET|PASSWORD|TOKEN)\\s*="
+      description: "Regex pattern to detect hardcoded secrets in source files"
+    custom_rules:
+      type: string
+      default: "enforcement/"
+      description: "Directory containing project-specific executable rule scripts"
+
+  review:
+    provider:
+      type: string
+      default: "coderabbit"
+      description: "External review agent (coderabbit, greptile, or none)"
+    auto_address_comments:
+      type: boolean
+      default: true
+      description: "Agent automatically addresses review comments"
+    max_review_cycles:
+      type: integer
+      default: 3
+      description: "Max iterations of review → fix → re-review before escalating"
+
+  verification:
+    max_retries:
+      type: integer
+      default: 3
+      description: "Max retries when pre-commit verification fails before escalating to human"
+    on_fail:
+      type: string
+      enum: ["fix", "escalate"]
+      default: "fix"
+      description: "What to do on verification failure: fix and retry, or escalate immediately"
+    checks:
+      type: array
+      description: "Verification checks run at the pre-commit gate"
+      items:
+        name:
+          type: string
+          description: "Check name (lint, test, enforcement)"
+        command:
+          type: string
+          description: "Shell command to run. Exit 0 = pass, non-zero = fail."
+
+  gardening:
+    enabled:
+      type: boolean
+      default: true
+    trigger:
+      type: string
+      default: "post-feature"
+      description: "When gardening runs: post-feature (end of /implement-feature)"
+    checks:
+      type: array
+      default:
+        - "unused imports and exports"
+        - "files exceeding file_size_limit"
+        - "docs matching actual code structure"
+        - "test coverage gaps"
+      description: "What the /garden skill checks for"
