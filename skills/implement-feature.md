@@ -161,36 +161,28 @@ Invoke `/create-qa` to generate a manual QA checklist based on the changes made.
 
 ## Phase 4: PR and Review
 
-### 4.1 — Push the branch
-```bash
-git push -u origin <branch-name>
-```
+### 4.1 — Create the PR
+Invoke `/create-pr` to handle the standards gate (lint, test, enforcement) and PR creation. This skill will:
+- Run all verification checks (blocking gate — stops if any fail)
+- Push the branch
+- Create the PR with a properly formatted title and body
 
-### 4.2 — Open the PR
-```bash
-gh pr create --title "<concise title under 70 chars>" --body "<body>"
-```
+If `/create-pr` fails the standards gate, fix the issues and invoke it again.
 
-The PR body should include:
-- Summary of what was implemented (from the plan)
-- Link to the plan file
-- QA checklist (from `/create-qa`)
-- Any decisions made during implementation
-
-### 4.3 — Wait for review
+### 4.2 — Wait for review
 Wait 30 seconds for the review agent (e.g., CodeRabbit) to begin its review:
 ```bash
 sleep 30
 ```
 
-### 4.4 — Poll for review comments
+### 4.3 — Poll for review comments
 Get the PR number from the `gh pr create` output, then poll:
 ```bash
 gh api repos/{owner}/{repo}/pulls/{pr_number}/reviews
 gh api repos/{owner}/{repo}/pulls/{pr_number}/comments
 ```
 
-### 4.5 — Address review comments
+### 4.4 — Address review comments
 For each review comment:
 
 **If actionable** (requests a code change):
@@ -208,7 +200,7 @@ For each review comment:
 **If unclear** (you do not understand the comment):
 - Do NOT guess. Reply asking for clarification, and escalate to the human.
 
-### 4.6 — Re-review loop
+### 4.5 — Re-review loop
 After pushing fixes:
 1. Wait 30 seconds for re-review
 2. Poll for new comments
@@ -217,7 +209,7 @@ After pushing fixes:
 
 Loop up to `review.max_review_cycles` (from `harness.yaml`, default 3).
 
-### 4.7 — Resolution
+### 4.6 — Resolution
 **If the review agent approves or there are no new actionable comments:**
 ```
 PR is ready for merge: <PR URL>

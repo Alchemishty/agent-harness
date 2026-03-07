@@ -17,12 +17,14 @@ Each rule is a standalone executable script in the `enforcement/` directory. Scr
 
 ```
 enforcement/
-├── run-all.sh                 # Orchestrator — runs every rule, exits non-zero if ANY fails
-├── no-secrets-in-code.sh      # Universal rule
-├── import-direction.sh        # Structural rule (project-specific)
-├── file-size-limits.sh        # Universal rule
-└── no-raw-sql-in-handlers.sh  # Custom rule (added over time)
+├── run-all.sh                    # Orchestrator — runs every rule, exits non-zero if ANY fails
+├── check-no-secrets.sh           # Universal rule
+├── check-import-direction.sh     # Structural rule (project-specific)
+├── check-file-size.sh            # Universal rule
+└── check-no-raw-sql-handlers.sh  # Custom rule (added over time)
 ```
+
+Naming convention: prefix all rule scripts with `check-` so they are easily identifiable and won't collide with `run-all.sh` or other utility scripts.
 
 ### Exit codes
 
@@ -78,25 +80,17 @@ set -euo pipefail
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 FAILED=0
 
-run_rule() {
-  local rule="$1"
-  if ! bash "$SCRIPT_DIR/$rule"; then
+# Run all check-*.sh scripts in this directory
+for script in "$SCRIPT_DIR"/check-*.sh; do
+  [ -f "$script" ] || continue
+  echo "Running: $(basename "$script")"
+  if ! bash "$script"; then
     FAILED=1
   fi
-}
-
-# Universal rules
-run_rule "no-secrets-in-code.sh"
-run_rule "file-size-limits.sh"
-
-# Structural rules
-run_rule "import-direction.sh"
-
-# Custom rules (add new rules here)
-# run_rule "no-raw-sql-in-handlers.sh"
+  echo ""
+done
 
 if [ "$FAILED" -ne 0 ]; then
-  echo ""
   echo "ENFORCEMENT FAILED: one or more rules violated."
   echo "Fix the issues above and retry."
   exit 1
@@ -108,9 +102,11 @@ exit 0
 
 ### Key properties
 
+- Uses a glob pattern (`check-*.sh`) so adding a new rule only requires creating a new `check-*.sh` script. No need to edit `run-all.sh`.
 - `set -euo pipefail` is used for the script itself, but individual rules are called with `if ! bash ...` so that a failing rule does not short-circuit the others.
 - All rules run, even if early ones fail. This gives the agent the full picture on the first attempt.
 - The final exit code reflects whether any rule failed.
+- The `check-` prefix naming convention ensures only enforcement rule scripts run, not utility scripts or `run-all.sh` itself.
 
 ## When Rules Run
 

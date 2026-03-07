@@ -34,7 +34,7 @@ agent-harness/
 │
 ├── references/                        # "What good looks like" — agent reads and adapts
 │   ├── agents-md-reference.md         # Reference AGENTS.md (table-of-contents style, ~100 lines)
-│   ├── testing-md-reference.md        # Reference testing guide
+│   ├── testing-reference.md            # Reference testing guide
 │   ├── conventions-reference.md       # Reference coding conventions doc
 │   ├── architecture-reference.md      # Reference architecture doc
 │   └── doc-structure-reference.md     # How to organize docs/ directory

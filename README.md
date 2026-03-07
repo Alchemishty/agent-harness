@@ -28,9 +28,10 @@ After running `/install-harness`, your project will contain:
 
 ## Skills
 
+### Installed into target projects
+
 | Skill | Purpose |
 |---|---|
-| `/install-harness` | Entry point — detects mode, delegates |
 | `/implement-feature` | Orchestrator: plan → code → test → review → merge-ready |
 | `/create-plan` | Implementation plan generator |
 | `/create-tests` | Tier-aware test generator |
@@ -39,6 +40,15 @@ After running `/install-harness`, your project will contain:
 | `/deslop` | Code cleanup |
 | `/garden` | Entropy scan + cleanup |
 | `/doc-split` | Auto-split large docs |
+| `project-structure-validator` | Architecture compliance agent (installed to `.claude/agents/`) |
+
+### Bootstrap-only (stay in this repo)
+
+| Skill | Purpose |
+|---|---|
+| `/install-harness` | Entry point — detects greenfield vs existing, copies skills, delegates |
+| `/bootstrap-greenfield` | New project conversation + scaffold generation |
+| `/bootstrap-existing` | Existing project scan + adaptation |
 
 ## Repo Structure
 
@@ -48,6 +58,7 @@ agent-harness/
 ├── skills/              # Claude Code commands (copied into target .claude/commands/)
 ├── enforcement/         # Architecture enforcement framework + common rules
 ├── hooks/               # Claude Code hook configuration references
+├── test/                # Dry-run checklists for validating the harness
 └── docs/plans/          # Design doc and implementation plan
 ```
 

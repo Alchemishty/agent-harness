@@ -141,11 +141,11 @@ docs/
 
 The index file (conventions.md) retains its original path so that all existing links in AGENTS.md continue to work. Agents follow the sub-links from the index when they need a specific section.
 
-The default threshold is typically 300 lines, but each project can override it in harness.yaml:
+The default threshold is 200 lines, but each project can override it in harness.yaml:
 
 ```yaml
 docs:
-  max_doc_lines: 300
+  max_doc_lines: 200
 ```
 
 ## Naming Conventions

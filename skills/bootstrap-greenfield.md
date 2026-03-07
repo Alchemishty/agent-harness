@@ -21,6 +21,8 @@ Also read these reference documents -- you will adapt them in later steps:
 - `HARNESS_PATH/references/conventions-reference.md`
 - `HARNESS_PATH/references/testing-reference.md`
 - `HARNESS_PATH/references/doc-structure-reference.md`
+- `HARNESS_PATH/enforcement/enforcement-reference.md`
+- `HARNESS_PATH/hooks/hooks-reference.md`
 
 ---
 
@@ -543,21 +545,27 @@ Adapt the file extensions and excluded directories to the project's language. Ma
 
 ## Step 8: Configure verification hooks
 
-Explain to the user what to add to `.claude/settings.json` for pre-commit verification:
+Read `HARNESS_PATH/hooks/hooks-reference.md` for the correct hook configuration format.
 
-> To enable automatic pre-commit verification, add the following to `.claude/settings.json`:
->
-> ```json
-> {
->   "hooks": {
->     "preCommit": [
->       { "command": "<analyze command from harness.yaml>" },
->       { "command": "<test command from harness.yaml>" },
->       { "command": "bash enforcement/run-all.sh" }
->     ]
->   }
-> }
-> ```
+Generate `.claude/settings.json` with pre-commit verification hooks. The format uses `PreToolCall` to intercept `git commit` commands:
+
+```json
+{
+  "hooks": {
+    "PreToolCall": [
+      {
+        "matcher": "Bash",
+        "pattern": "git commit",
+        "command": "<analyze command> && <test command> && bash enforcement/run-all.sh"
+      }
+    ]
+  }
+}
+```
+
+Replace `<analyze command>` and `<test command>` with the actual commands from the `harness.yaml` you generated in Step 3 (e.g., `ruff check src/` and `pytest tests/`).
+
+Chain all verification checks with `&&` so the commit is blocked if ANY check fails. The error output is returned to the agent, which can then read it, fix the issue, and retry.
 
 Ask the user if they want you to create or update `.claude/settings.json` with these hooks now.
 

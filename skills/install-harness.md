@@ -125,10 +125,16 @@ Respect the user's choice. If they say "Keep existing and only add missing", ski
 
 Create the `.claude/commands/` directory in the target project if it does not exist.
 
-Copy all `.md` files from `HARNESS_PATH/skills/` into the target project's `.claude/commands/` directory, with these exceptions -- do NOT copy:
+Copy `.md` files from `HARNESS_PATH/skills/` into the target project, with these exceptions -- do NOT copy:
 - `install-harness.md` (this file -- it stays in the harness repo only)
 - `bootstrap-greenfield.md` (bootstrap-only, stays in harness repo)
 - `bootstrap-existing.md` (bootstrap-only, stays in harness repo)
+
+**Special handling for `project-structure-validator.md`:**
+- This file goes to `.claude/agents/project-structure-validator.md` (NOT `.claude/commands/`)
+- Create the `.claude/agents/` directory if it does not exist
+
+All other skill files go to `.claude/commands/`.
 
 For each file copied, verify it was written correctly by reading it back and checking it is non-empty.
 
@@ -138,6 +144,9 @@ Report what was copied:
 > - `<filename1>`
 > - `<filename2>`
 > - ...
+>
+> Copied to `.claude/agents/`:
+> - `project-structure-validator.md`
 
 ---
 
