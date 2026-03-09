@@ -156,10 +156,36 @@ After implementation completes, a plan adherence check verifies: every step was 
 
 Review feedback is treated as the highest-signal input: reviewers explicitly state team standards that may not be documented anywhere.
 
+## Installation Methods
+
+### As a Claude Code Plugin (recommended)
+
+Install from the marketplace — no cloning needed. All skills are available as slash commands immediately.
+
+The plugin is organized into three bundles:
+- **agent-harness-bootstrap** — `/install-harness`, `/bootstrap-greenfield`, `/bootstrap-existing`, `/update-harness`
+- **agent-harness-workflow** — `/implement-feature`, `/create-plan`, `/create-tests`, `/create-pr`, `/create-qa`, `/retrospective`
+- **agent-harness-maintenance** — `/deslop`, `/garden`, `/doc-split`, `project-structure-validator`
+
+### As a Git Clone (for customization)
+
+Clone the repo and point `/install-harness` to its location. This allows forking and customizing skills for your team.
+
 ## Repo Structure
 
 ```
 agent-harness/
+├── .claude-plugin/          # Plugin marketplace definition
+│   └── marketplace.json
+├── SKILL.md                 # Plugin collection metadata
+├── skills/                  # Claude Code skills (each in its own directory)
+│   ├── implement-feature/
+│   │   └── SKILL.md
+│   ├── create-plan/
+│   │   └── SKILL.md
+│   ├── retrospective/
+│   │   └── SKILL.md
+│   └── ...                  # 14 skills total
 ├── references/              # "What good looks like" — templates and guides
 │   ├── agents-md-reference.md
 │   ├── architecture-reference.md
@@ -167,7 +193,6 @@ agent-harness/
 │   ├── testing-reference.md
 │   ├── doc-structure-reference.md
 │   └── context-management-reference.md
-├── skills/                  # Claude Code skills (copied into target projects)
 ├── enforcement/             # Architecture enforcement framework + common rules
 ├── hooks/                   # Claude Code hook configuration references
 └── test/                    # Dry-run checklists for validating the harness

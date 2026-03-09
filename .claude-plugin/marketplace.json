@@ -1,0 +1,51 @@
+{
+  "name": "agent-harness-marketplace",
+  "owner": {
+    "name": "Alchemishty",
+    "email": ""
+  },
+  "metadata": {
+    "description": "Framework-agnostic harness for autonomous agent-driven development with Claude Code. Provides workflow automation, enforcement, context engineering, and cross-session memory.",
+    "version": "2.0.0"
+  },
+  "plugins": [
+    {
+      "name": "agent-harness-bootstrap",
+      "description": "Install and configure the agent harness in any project. Detects greenfield vs existing codebases, scaffolds documentation, enforcement rules, and verification hooks. Use when setting up a new project or installing the harness into an existing codebase.",
+      "source": "./",
+      "strict": false,
+      "skills": [
+        "./skills/install-harness",
+        "./skills/bootstrap-greenfield",
+        "./skills/bootstrap-existing",
+        "./skills/update-harness"
+      ]
+    },
+    {
+      "name": "agent-harness-workflow",
+      "description": "End-to-end development workflow: plan features, implement with TDD, create PRs with quality gates, and capture learnings. Use for any feature implementation, planning, testing, or code review workflow.",
+      "source": "./",
+      "strict": false,
+      "skills": [
+        "./skills/implement-feature",
+        "./skills/create-plan",
+        "./skills/create-tests",
+        "./skills/create-pr",
+        "./skills/create-qa",
+        "./skills/retrospective"
+      ]
+    },
+    {
+      "name": "agent-harness-maintenance",
+      "description": "Codebase health and cleanup: entropy scanning, code cleanup, doc management, and architecture validation. Use for post-implementation cleanup, doc splitting, or codebase audits.",
+      "source": "./",
+      "strict": false,
+      "skills": [
+        "./skills/deslop",
+        "./skills/garden",
+        "./skills/doc-split",
+        "./skills/project-structure-validator"
+      ]
+    }
+  ]
+}
