@@ -21,19 +21,30 @@ Most AI coding setups throw an agent at a codebase with a system prompt and hope
 
 ## Quick Start
 
-1. Open Claude Code in your project directory
-2. Run: `/install-harness` (point it to this repo's location)
-3. The skill will detect whether your project is greenfield or existing and guide you through setup
+### Install the Plugin (recommended)
 
-### Updating an Existing Installation
+1. Install the **agent-harness** plugin in Claude Code
+2. Open your project directory
+3. Run: `/install-harness`
+4. The skill detects whether your project is greenfield or existing and guides you through setup
 
-When the harness repo evolves with new skills or improvements:
+All 14 skills are available immediately. Plugin updates give you the latest skill logic automatically.
 
-1. Open Claude Code in your project directory
-2. Run: `/update-harness`
-3. The skill diffs your installed skills against the latest, shows what changed, and updates with your confirmation
+### Alternative: Git Clone
 
-Skills are replaced wholesale (they're harness-owned). Project-specific config (`harness.yaml`, `docs/`, `enforcement/`, `memory/`) is never overwritten.
+If you want to fork and customize skills for your team:
+
+1. Clone this repo
+2. Open Claude Code in your project directory
+3. Run: `/install-harness` (point it to the cloned repo's location)
+
+### Migrating Project Scaffolding
+
+When new harness versions add project-level conventions (directories, schema fields):
+
+1. Run: `/migrate-harness`
+2. It adds missing directories (`memory/`, `scratch/`), new `harness.yaml` fields, and suggests `AGENTS.md` updates
+3. Your project config, docs, enforcement, and memory are never overwritten
 
 ## What Gets Installed
 
@@ -82,7 +93,7 @@ enforcement/              # Executable architecture rules
 | `/install-harness` | Entry point — detects greenfield vs existing, copies skills |
 | `/bootstrap-greenfield` | Interactive setup for new projects |
 | `/bootstrap-existing` | Deep-scan and adapt to existing codebases |
-| `/update-harness` | Pull latest skills into an already-installed project |
+| `/migrate-harness` | Migrate project scaffolding to match latest harness version |
 
 ## Architecture
 

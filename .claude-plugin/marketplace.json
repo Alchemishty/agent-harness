@@ -18,7 +18,7 @@
         "./skills/install-harness",
         "./skills/bootstrap-greenfield",
         "./skills/bootstrap-existing",
-        "./skills/update-harness",
+        "./skills/migrate-harness",
         "./skills/implement-feature",
         "./skills/create-plan",
         "./skills/create-tests",

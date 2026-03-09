@@ -25,7 +25,7 @@ Skills for installing and configuring the harness in any project.
 - **install-harness** — Entry point: detects greenfield vs existing, copies skills, delegates to bootstrap
 - **bootstrap-greenfield** — Interactive setup for new projects: questions, scaffold, docs, enforcement
 - **bootstrap-existing** — Deep-scan existing codebases and adapt without restructuring
-- **update-harness** — Pull latest skills into already-installed projects
+- **migrate-harness** — Migrate project scaffolding to match latest harness version
 
 ### Workflow
 End-to-end development automation from plan to merge-ready PR.

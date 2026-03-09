@@ -43,6 +43,7 @@ Verify that `HARNESS_PATH` contains the expected structure. Check for the existe
 - `HARNESS_PATH/references/conventions-reference.md` file
 - `HARNESS_PATH/references/testing-reference.md` file
 - `HARNESS_PATH/references/doc-structure-reference.md` file
+- `HARNESS_PATH/references/context-management-reference.md` file
 
 If any are missing, report exactly which files/directories are absent and stop. Tell the user:
 
@@ -125,14 +126,20 @@ Respect the user's choice. If they say "Keep existing and only add missing", ski
 
 Create the `.claude/commands/` directory in the target project if it does not exist.
 
-Copy `.md` files from `HARNESS_PATH/skills/` into the target project, with these exceptions -- do NOT copy:
-- `install-harness.md` (this file -- it stays in the harness repo only)
-- `bootstrap-greenfield.md` (bootstrap-only, stays in harness repo)
-- `bootstrap-existing.md` (bootstrap-only, stays in harness repo)
-- `update-harness.md` (harness-repo-only, used to update existing installations)
+Copy skill files from `HARNESS_PATH/skills/` into the target project. Each skill is in a subdirectory with a `SKILL.md` file (e.g., `skills/implement-feature/SKILL.md`).
 
-**Special handling for `project-structure-validator.md`:**
-- This file goes to `.claude/agents/project-structure-validator.md` (NOT `.claude/commands/`)
+For each skill subdirectory, copy `SKILL.md` to the target as `<skill-name>.md`. For example:
+- `HARNESS_PATH/skills/implement-feature/SKILL.md` → `.claude/commands/implement-feature.md`
+- `HARNESS_PATH/skills/create-plan/SKILL.md` → `.claude/commands/create-plan.md`
+
+Do NOT copy these (they stay in the harness repo only):
+- `install-harness` (this skill)
+- `bootstrap-greenfield` (bootstrap-only)
+- `bootstrap-existing` (bootstrap-only)
+- `migrate-harness` (harness-repo-only)
+
+**Special handling for `project-structure-validator`:**
+- Copy to `.claude/agents/project-structure-validator.md` (NOT `.claude/commands/`)
 - Create the `.claude/agents/` directory if it does not exist
 
 All other skill files go to `.claude/commands/`.

@@ -1,11 +1,13 @@
 ---
-name: update-harness
-description: Update an existing harness installation with latest skills, references, and conventions from the harness repository without touching project-specific config or docs.
+name: migrate-harness
+description: Migrate project scaffolding to match the latest harness version. Adds new directories (memory/, scratch/), new harness.yaml fields, and suggests AGENTS.md updates. For plugin users this handles what a plugin update cannot — project-level structure changes. For git-clone users this also updates copied skill files.
 ---
 
-# Update Harness
+# Migrate Harness
 
-Pull the latest harness skills and conventions into a project that was previously set up with `/install-harness`. This updates harness-owned files (skills, agents) while preserving project-owned files (config, docs, enforcement, memory).
+Migrate a harness-managed project's scaffolding to match the latest harness version. A plugin update gives you the latest skill logic automatically, but it cannot retroactively create directories, add schema fields, or update project docs. This skill handles those project-level migrations.
+
+For **git-clone users**, this also updates skill files in `.claude/commands/` (since those are copied, not loaded from the plugin).
 
 **Core principle:** Skills are harness-owned — replace wholesale. Config and docs are project-owned — merge carefully or skip.
 
@@ -57,19 +59,21 @@ Stop. Do not proceed.
 
 Compare skills in `HARNESS_PATH/skills/` against `.claude/commands/` and `.claude/agents/`.
 
+Each skill in the harness is in a subdirectory with a `SKILL.md` file (e.g., `skills/implement-feature/SKILL.md`). In the project, skills are flat files (e.g., `.claude/commands/implement-feature.md`).
+
 Exclude bootstrap-only skills that are never copied to projects:
-- `install-harness.md`
-- `bootstrap-greenfield.md`
-- `bootstrap-existing.md`
-- `update-harness.md`
+- `install-harness`
+- `bootstrap-greenfield`
+- `bootstrap-existing`
+- `migrate-harness`
 
-For each remaining skill in the harness:
+For each remaining skill subdirectory in the harness, compare `HARNESS_PATH/skills/<name>/SKILL.md` against `.claude/commands/<name>.md`:
 
-1. **New** — exists in harness but not in the project
+1. **New** — skill directory exists in harness but no corresponding `.md` in the project
 2. **Modified** — exists in both, but content differs (compare file contents)
 3. **Unchanged** — exists in both with identical content
 
-Special handling for `project-structure-validator.md`: compare against `.claude/agents/` instead of `.claude/commands/`.
+Special handling for `project-structure-validator`: compare against `.claude/agents/project-structure-validator.md` instead of `.claude/commands/`.
 
 Present the diff summary:
 
@@ -111,9 +115,9 @@ After user confirmation:
 
 ### 4a: Copy new and modified skills
 
-For each **new** and **modified** skill (excluding bootstrap-only and update-harness):
-- Copy from `HARNESS_PATH/skills/<name>.md` to `.claude/commands/<name>.md`
-- Exception: `project-structure-validator.md` goes to `.claude/agents/`
+For each **new** and **modified** skill (excluding bootstrap-only and migrate-harness):
+- Copy from `HARNESS_PATH/skills/<name>/SKILL.md` to `.claude/commands/<name>.md`
+- Exception: `project-structure-validator` goes to `.claude/agents/project-structure-validator.md`
 
 ### 4b: Verify copies
 
