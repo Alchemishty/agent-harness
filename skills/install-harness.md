@@ -129,6 +129,7 @@ Copy `.md` files from `HARNESS_PATH/skills/` into the target project, with these
 - `install-harness.md` (this file -- it stays in the harness repo only)
 - `bootstrap-greenfield.md` (bootstrap-only, stays in harness repo)
 - `bootstrap-existing.md` (bootstrap-only, stays in harness repo)
+- `update-harness.md` (harness-repo-only, used to update existing installations)
 
 **Special handling for `project-structure-validator.md`:**
 - This file goes to `.claude/agents/project-structure-validator.md` (NOT `.claude/commands/`)

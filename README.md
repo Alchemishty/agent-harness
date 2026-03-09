@@ -25,6 +25,16 @@ Most AI coding setups throw an agent at a codebase with a system prompt and hope
 2. Run: `/install-harness` (point it to this repo's location)
 3. The skill will detect whether your project is greenfield or existing and guide you through setup
 
+### Updating an Existing Installation
+
+When the harness repo evolves with new skills or improvements:
+
+1. Open Claude Code in your project directory
+2. Run: `/update-harness`
+3. The skill diffs your installed skills against the latest, shows what changed, and updates with your confirmation
+
+Skills are replaced wholesale (they're harness-owned). Project-specific config (`harness.yaml`, `docs/`, `enforcement/`, `memory/`) is never overwritten.
+
 ## What Gets Installed
 
 After running `/install-harness`, your project will contain:
@@ -72,6 +82,7 @@ enforcement/              # Executable architecture rules
 | `/install-harness` | Entry point — detects greenfield vs existing, copies skills |
 | `/bootstrap-greenfield` | Interactive setup for new projects |
 | `/bootstrap-existing` | Deep-scan and adapt to existing codebases |
+| `/update-harness` | Pull latest skills into an already-installed project |
 
 ## Architecture
 
