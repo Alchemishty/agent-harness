@@ -12,6 +12,8 @@
 | Testing strategy | [docs/testing.md](docs/testing.md) |
 | Active plans | [docs/plans/active/](docs/plans/active/) |
 | Decision records | [docs/decisions/](docs/decisions/) |
+| Agent memory | [memory/](memory/) |
+| Context management | [references/context-management-reference.md](references/context-management-reference.md) |
 
 ## Tech Stack
 
@@ -73,15 +75,23 @@ See [docs/domain.md](docs/domain.md) for the full glossary and business rules.
 
 See [docs/testing.md](docs/testing.md) for the full testing strategy.
 
+## Context Management
+
+<!-- ADAPT: Keep this section brief — 3-4 lines pointing to the reference. -->
+
+Agents write learned patterns and recurring fixes to `memory/` for cross-session persistence. Verbose tool output (tests, lint, builds) goes to `scratch/` — keep only summaries in conversation context. For long tasks (7+ steps), use sub-agents to isolate context. See the context management reference for details.
+
 ## Agent Rules
 
-1. **Read before modifying** — always read a file before editing it
+<!-- Rules are ordered for attention-favored placement: most critical at edges (1-3, 8-10), less critical in middle (4-7). -->
+
+1. **Never commit secrets or credentials** — use environment variables
 2. **Run verification before committing** — never skip the pre-commit gate
-3. **Follow docs/conventions.md** — consistency over preference
-4. **Update docs when architecture changes** — keep docs/ in sync with reality
-5. **Check harness.yaml for commands** — never hardcode tool invocations
-6. **Escalate to human when stuck after 3 retries** — don't spin endlessly
-7. **Write tests before implementation** — TDD by default
-8. **Keep commits atomic** — one logical change per commit
-9. **Record non-obvious decisions in docs/decisions/** — future agents need context
-10. **Never commit secrets or credentials** — use environment variables
+3. **Write tests before implementation** — TDD by default
+4. **Follow docs/conventions.md** — consistency over preference
+5. **Update docs when architecture changes** — keep docs/ in sync with reality
+6. **Keep commits atomic** — one logical change per commit
+7. **Record non-obvious decisions in docs/decisions/** — future agents need context
+8. **Escalate to human when stuck after 3 retries** — don't spin endlessly
+9. **Check harness.yaml for commands** — never hardcode tool invocations
+10. **Read before modifying** — always read a file before editing it

@@ -24,6 +24,7 @@ Read these files from the harness repository:
 - `HARNESS_PATH/references/doc-structure-reference.md`
 - `HARNESS_PATH/enforcement/enforcement-reference.md`
 - `HARNESS_PATH/hooks/hooks-reference.md`
+- `HARNESS_PATH/references/context-management-reference.md`
 
 ---
 
@@ -232,7 +233,7 @@ Read `HARNESS_PATH/references/agents-md-reference.md` as your template.
 Generate `AGENTS.md` by adapting the template to describe the project AS IT EXISTS:
 
 1. Project name and description from the package config or user input.
-2. Quick Reference table pointing to `docs/` files.
+2. Quick Reference table pointing to `docs/` files and `memory/`.
 3. Tech Stack table from detected language, framework, database, and dependencies.
 4. Commands section mirroring `harness.yaml` (these must be commands that actually work today).
 5. Project Structure section showing the ACTUAL directory layout from the scan (not an idealized version).
@@ -248,7 +249,7 @@ Keep AGENTS.md under 120 lines. Do NOT describe aspirational state -- describe r
 
 ## Step 7: Generate docs/ directory
 
-Create the docs directory structure:
+Create the docs and memory directory structure:
 
 ```
 docs/
@@ -261,9 +262,10 @@ docs/
     completed/
   decisions/
     001-initial-setup.md
+memory/
 ```
 
-Place a `.gitkeep` in `docs/plans/active/` and `docs/plans/completed/`.
+Place a `.gitkeep` in `docs/plans/active/`, `docs/plans/completed/`, and `memory/`.
 
 ### 7a: architecture.md
 
@@ -419,6 +421,10 @@ Present a complete summary of everything generated:
 >
 > ### Files generated (new):
 > <list every new file>
+>
+> - `memory/.gitkeep` -- cross-session agent memory
+>
+> Ensure `scratch/` is added to `.gitignore` (temporary agent working files).
 >
 > ### Files NOT modified:
 > - All existing source code (untouched)

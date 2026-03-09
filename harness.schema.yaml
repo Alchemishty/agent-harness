@@ -125,6 +125,14 @@ schema:
     decisions:
       type: string
       default: "docs/decisions/"
+    memory:
+      type: string
+      default: "memory/"
+      description: "Directory for cross-session agent memory. Agents write learned patterns, failure fixes, and user preferences here. Persists across sessions."
+    scratch:
+      type: string
+      default: "scratch/"
+      description: "Directory for temporary working files (tool output captures, intermediate results). Auto-cleaned between features. Should be in .gitignore."
     max_doc_lines:
       type: integer
       default: 200

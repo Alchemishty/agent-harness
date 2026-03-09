@@ -20,6 +20,8 @@ docs/
     active/
     completed/
   decisions/
+memory/
+scratch/           (in .gitignore — not committed)
 ```
 
 ### architecture.md
@@ -122,6 +124,41 @@ Each decision record contains:
 - **Consequences**: known tradeoffs of this choice
 
 Number decisions sequentially. Never reuse a number. If a decision is reversed, mark the original as superseded and create a new record that references it.
+
+## memory/ Directory
+
+Cross-session agent memory. Agents write learned patterns, recurring fixes, user preferences, and accumulated domain knowledge here. Files persist across sessions and are read at session startup to bootstrap context.
+
+Organize by topic, not chronologically:
+
+```
+memory/
+  patterns.md       # Confirmed coding patterns and conventions
+  fixes.md          # Solutions to recurring problems
+  preferences.md    # User workflow and tool preferences
+  domain.md         # Domain knowledge accumulated over sessions
+```
+
+**What to write:** Patterns confirmed across multiple sessions, solutions to recurring problems, explicit user preferences, verified domain knowledge.
+
+**What NOT to write:** Session-specific state, speculative conclusions, anything already in docs/ (don't duplicate), incomplete information.
+
+When an entry becomes outdated, mark it `[SUPERSEDED]` with a date and reason rather than deleting — this preserves history so future agents understand why something changed. Check for existing entries before writing new ones.
+
+See [references/context-management-reference.md](../references/context-management-reference.md) for the full context management guide.
+
+## scratch/ Directory
+
+Temporary working directory for verbose tool output (test results, lint output, build logs, enforcement checks). Agents write full output here and keep only compact summaries in conversation context. This prevents context window bloat during long sessions.
+
+```
+scratch/
+  last-test-run.log
+  last-lint-run.log
+  last-enforcement.log
+```
+
+**Lifecycle:** Files are overwritten on each run, never accumulated. The `/garden` skill cleans scratch/ during post-feature cleanup. The directory is listed in `.gitignore` and never committed.
 
 ## Auto-Split Behavior
 

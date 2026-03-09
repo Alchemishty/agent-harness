@@ -23,6 +23,7 @@ Also read these reference documents -- you will adapt them in later steps:
 - `HARNESS_PATH/references/doc-structure-reference.md`
 - `HARNESS_PATH/enforcement/enforcement-reference.md`
 - `HARNESS_PATH/hooks/hooks-reference.md`
+- `HARNESS_PATH/references/context-management-reference.md`
 
 ---
 
@@ -173,6 +174,7 @@ Generate `AGENTS.md` in the project root by adapting the template:
    - `docs/testing.md`
    - `docs/plans/active/`
    - `docs/decisions/`
+   - `memory/`
 4. Fill in the Tech Stack table from the user's language, framework, database, and other answers.
 5. Fill in the Commands section mirroring what was written to `harness.yaml`.
 6. Write a brief Project Structure section showing the planned directory layout (you will create this in Step 6).
@@ -201,6 +203,7 @@ docs/
     completed/
   decisions/
     001-initial-setup.md
+memory/
 ```
 
 ### 5a: architecture.md
@@ -281,9 +284,9 @@ Create a decision record documenting the bootstrap choices:
 - These choices can be revisited by creating a new decision record that supersedes this one.
 ```
 
-### 5f: Create empty plan directories
+### 5f: Create empty plan and memory directories
 
-Create `docs/plans/active/` and `docs/plans/completed/` as empty directories. Place a `.gitkeep` file in each so Git tracks them.
+Create `docs/plans/active/`, `docs/plans/completed/`, and `memory/` as empty directories. Place a `.gitkeep` file in each so Git tracks them.
 
 ---
 
@@ -396,6 +399,7 @@ Generate a `.gitignore` appropriate for the chosen language. Include at minimum:
 - OS files (.DS_Store, Thumbs.db)
 - Environment files (.env, .env.local)
 - Coverage output
+- `scratch/` (temporary agent working files — never committed)
 
 ### 6d: CI workflow
 
@@ -610,6 +614,7 @@ Before committing, present a complete summary of everything generated:
 > - `docs/decisions/001-initial-setup.md` -- bootstrap decision record
 > - `docs/plans/active/.gitkeep`
 > - `docs/plans/completed/.gitkeep`
+> - `memory/.gitkeep` -- cross-session agent memory
 >
 > **Enforcement:**
 > - `enforcement/run-all.sh` -- enforcement runner
