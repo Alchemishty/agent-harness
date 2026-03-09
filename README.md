@@ -160,12 +160,7 @@ Review feedback is treated as the highest-signal input: reviewers explicitly sta
 
 ### As a Claude Code Plugin (recommended)
 
-Install from the marketplace — no cloning needed. All skills are available as slash commands immediately.
-
-The plugin is organized into three bundles:
-- **agent-harness-bootstrap** — `/install-harness`, `/bootstrap-greenfield`, `/bootstrap-existing`, `/update-harness`
-- **agent-harness-workflow** — `/implement-feature`, `/create-plan`, `/create-tests`, `/create-pr`, `/create-qa`, `/retrospective`
-- **agent-harness-maintenance** — `/deslop`, `/garden`, `/doc-split`, `project-structure-validator`
+Install the **agent-harness** plugin from the marketplace — no cloning needed. All 14 skills are available as slash commands immediately.
 
 ### As a Git Clone (for customization)
 

@@ -10,37 +10,21 @@
   },
   "plugins": [
     {
-      "name": "agent-harness-bootstrap",
-      "description": "Install and configure the agent harness in any project. Detects greenfield vs existing codebases, scaffolds documentation, enforcement rules, and verification hooks. Use when setting up a new project or installing the harness into an existing codebase.",
+      "name": "agent-harness",
+      "description": "Complete harness for autonomous agent-driven development. Bootstrap new or existing projects, implement features with TDD and quality gates, create PRs with automated review cycles, capture learnings to cross-session memory, and maintain codebase health. Use for any project setup, feature implementation, code review, or codebase maintenance workflow.",
       "source": "./",
       "strict": false,
       "skills": [
         "./skills/install-harness",
         "./skills/bootstrap-greenfield",
         "./skills/bootstrap-existing",
-        "./skills/update-harness"
-      ]
-    },
-    {
-      "name": "agent-harness-workflow",
-      "description": "End-to-end development workflow: plan features, implement with TDD, create PRs with quality gates, and capture learnings. Use for any feature implementation, planning, testing, or code review workflow.",
-      "source": "./",
-      "strict": false,
-      "skills": [
+        "./skills/update-harness",
         "./skills/implement-feature",
         "./skills/create-plan",
         "./skills/create-tests",
         "./skills/create-pr",
         "./skills/create-qa",
-        "./skills/retrospective"
-      ]
-    },
-    {
-      "name": "agent-harness-maintenance",
-      "description": "Codebase health and cleanup: entropy scanning, code cleanup, doc management, and architecture validation. Use for post-implementation cleanup, doc splitting, or codebase audits.",
-      "source": "./",
-      "strict": false,
-      "skills": [
+        "./skills/retrospective",
         "./skills/deslop",
         "./skills/garden",
         "./skills/doc-split",
