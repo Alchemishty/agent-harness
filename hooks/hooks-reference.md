@@ -38,35 +38,47 @@ Hook runs: enforcement checks + lint + tests
 
 ## Configuration
 
-Hooks are configured in `.claude/settings.json` (project-level settings, committed to the repo). The relevant section is `hooks.PreToolCall`.
+Hooks are configured in `.claude/settings.json` (project-level settings, committed to the repo). The relevant section is `hooks.PreToolUse`.
 
 ### Structure
 
 ```json
 {
   "hooks": {
-    "PreToolCall": [
+    "PreToolUse": [
       {
         "matcher": "Bash",
-        "pattern": "git commit",
-        "command": "bash enforcement/run-all.sh && ruff check src/ && pytest tests/ -x"
+        "hooks": [
+          {
+            "type": "command",
+            "command": ".claude/hooks/pre-commit-checks.sh"
+          }
+        ]
       }
     ]
   }
 }
 ```
 
+The hook script receives a JSON object on stdin with `tool_input` (containing the command) and `session` (containing cwd). The script is responsible for filtering which commands to act on (e.g., only `git commit`).
+
 ### Fields
 
 | Field | Purpose |
 |-------|---------|
 | `matcher` | Which tool to intercept. `"Bash"` matches the Bash tool that runs shell commands. |
-| `pattern` | Regex or substring to match within the tool call arguments. `"git commit"` matches any bash command containing `git commit`. |
-| `command` | Shell command to execute before the tool call proceeds. If this command exits non-zero, the tool call is blocked. |
+| `hooks` | Array of hook definitions to run when the matcher matches. |
+| `hooks[].type` | The hook type. Use `"command"` for shell commands. |
+| `hooks[].command` | Path to a script that receives tool call context on stdin. If this command exits non-zero, the tool call is blocked. |
 
-### How the command is built from harness.yaml
+### How the hook script is built from harness.yaml
 
-The bootstrap skill reads `verification.checks` from `harness.yaml` and chains the commands together with `&&`:
+The bootstrap skill reads `verification.checks` from `harness.yaml` and generates a wrapper shell script (e.g., `.claude/hooks/pre-commit-checks.sh`) that:
+
+1. Reads the JSON context from stdin
+2. Extracts the command being run via `jq`
+3. Only runs checks when the command matches `git commit`
+4. Chains the check commands with `&&`
 
 ```yaml
 # harness.yaml
@@ -80,35 +92,48 @@ verification:
       command: "pytest tests/ -x"
 ```
 
-Becomes:
+Becomes a script like:
 
-```json
-{
-  "command": "bash enforcement/run-all.sh && ruff check src/ && pytest tests/ -x"
-}
+```bash
+#!/bin/bash
+INPUT=$(cat)
+COMMAND=$(echo "$INPUT" | jq -r '.tool_input.command // ""')
+
+if ! echo "$COMMAND" | grep -q 'git commit'; then
+  exit 0
+fi
+
+CWD=$(echo "$INPUT" | jq -r '.session.cwd // "."')
+cd "$CWD" || exit 2
+
+bash enforcement/run-all.sh && ruff check src/ && pytest tests/ -x
 ```
 
 The `&&` chaining means checks run in order and stop at the first failure. This is intentional -- the agent gets the earliest error first, which is typically the cheapest to fix (enforcement rules before lint, lint before tests).
 
 ### Conceptual example with placeholders
 
-The bootstrap skills generate the actual config with real commands from `harness.yaml`. The conceptual pattern is:
+The bootstrap skills generate the actual config with a wrapper script from `harness.yaml`. The conceptual pattern is:
 
 ```json
 {
   "hooks": {
-    "PreToolCall": [
+    "PreToolUse": [
       {
         "matcher": "Bash",
-        "pattern": "git commit",
-        "command": "<enforcement_command> && <analyze_command> && <test_command>"
+        "hooks": [
+          {
+            "type": "command",
+            "command": ".claude/hooks/pre-commit-checks.sh"
+          }
+        ]
       }
     ]
   }
 }
 ```
 
-Where `<enforcement_command>`, `<analyze_command>`, and `<test_command>` are replaced with the actual commands from `harness.yaml → verification.checks` and `harness.yaml → commands`.
+The wrapper script handles filtering (only `git commit` commands), directory resolution, and chaining the actual check commands from `harness.yaml → verification.checks`.
 
 ## What Happens on Hook Failure
 
@@ -153,52 +178,43 @@ During bootstrap, the skill:
 3. Writes `.claude/settings.json` with the hook configuration
 4. Ensures the `.claude/` directory is committed to the repo (so all developers and agents get the same hooks)
 
-### Example generated config for a Python project
+### Example generated config (all languages share the same structure)
+
+The `settings.json` is identical regardless of language — only the wrapper script contents differ:
 
 ```json
 {
   "hooks": {
-    "PreToolCall": [
+    "PreToolUse": [
       {
         "matcher": "Bash",
-        "pattern": "git commit",
-        "command": "bash enforcement/run-all.sh && ruff check src/ && pytest tests/ -x"
+        "hooks": [
+          {
+            "type": "command",
+            "command": ".claude/hooks/pre-commit-checks.sh"
+          }
+        ]
       }
     ]
   }
 }
 ```
 
-### Example generated config for a Flutter project
+The language-specific check commands go inside the wrapper script. Examples:
 
-```json
-{
-  "hooks": {
-    "PreToolCall": [
-      {
-        "matcher": "Bash",
-        "pattern": "git commit",
-        "command": "bash enforcement/run-all.sh && dart analyze lib/ && flutter test"
-      }
-    ]
-  }
-}
+**Python project** — script runs:
+```bash
+bash enforcement/run-all.sh && ruff check src/ && pytest tests/ -x
 ```
 
-### Example generated config for a Go project
+**Flutter project** — script runs:
+```bash
+bash enforcement/run-all.sh && dart analyze lib/ && flutter test
+```
 
-```json
-{
-  "hooks": {
-    "PreToolCall": [
-      {
-        "matcher": "Bash",
-        "pattern": "git commit",
-        "command": "bash enforcement/run-all.sh && golangci-lint run && go test ./..."
-      }
-    ]
-  }
-}
+**Go project** — script runs:
+```bash
+bash enforcement/run-all.sh && golangci-lint run && go test ./...
 ```
 
 ## Important Notes

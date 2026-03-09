@@ -547,23 +547,34 @@ Adapt the file extensions and excluded directories to the project's language. Ma
 
 Read `HARNESS_PATH/hooks/hooks-reference.md` for the correct hook configuration format.
 
-Generate `.claude/settings.json` with pre-commit verification hooks. The format uses `PreToolCall` to intercept `git commit` commands:
+Generate `.claude/settings.json` with pre-commit verification hooks and a wrapper script. The format uses `PreToolUse` to intercept Bash tool calls:
 
 ```json
 {
   "hooks": {
-    "PreToolCall": [
+    "PreToolUse": [
       {
         "matcher": "Bash",
-        "pattern": "git commit",
-        "command": "<analyze command> && <test command> && bash enforcement/run-all.sh"
+        "hooks": [
+          {
+            "type": "command",
+            "command": ".claude/hooks/pre-commit-checks.sh"
+          }
+        ]
       }
     ]
   }
 }
 ```
 
-Replace `<analyze command>` and `<test command>` with the actual commands from the `harness.yaml` you generated in Step 3 (e.g., `ruff check src/` and `pytest tests/`).
+Also generate `.claude/hooks/pre-commit-checks.sh` — a wrapper script that:
+1. Reads JSON context from stdin
+2. Extracts the command via `jq -r '.tool_input.command // ""'`
+3. Exits 0 early if the command is not `git commit`
+4. Changes to the session working directory via `jq -r '.session.cwd // "."'`
+5. Chains the actual check commands with `&&` (e.g., `bash enforcement/run-all.sh && ruff check src/ && pytest tests/`)
+
+Replace the check commands with the actual commands from the `harness.yaml` you generated in Step 3.
 
 Chain all verification checks with `&&` so the commit is blocked if ANY check fails. The error output is returned to the agent, which can then read it, fix the issue, and retry.
 
